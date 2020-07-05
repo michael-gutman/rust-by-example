@@ -43,6 +43,30 @@ impl fmt::Display for Complex {
     }
 }
 
+// exercise: a structure containing a Vec<i32>, including the indices
+struct List(Vec<i32>);
+
+impl fmt::Display for List {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // create a reference to the vec
+        let vec = &self.0;
+
+        // since write! returns a Result, and that might be an Err, we add ?
+        // ? will properly handle the Result for us
+        write!(f, "[")?;
+
+        for (count, v) in vec.iter().enumerate() {
+            // print a comma and a space before each element after the first
+            if count != 0 { write!(f, ", ")?; }
+            // then print the index and the value
+            write!(f, "{}: {}", count, v)?;
+        }
+
+        // This one doesn't need ? because the Result is actually returned
+        write!(f, "]")
+    }
+}
+
 
 fn main() {
     println!("We can print this struct: {}", Printable(11));
@@ -54,4 +78,7 @@ fn main() {
     let c1 = Complex{ real: 3.3, imag: 7.2 };
     println!("Display: {}", c1);
     println!("Debug (derived): {:?}", c1);
+
+    let v = List(vec![1, 2, 3]);
+    println!("{}", v);
 }
